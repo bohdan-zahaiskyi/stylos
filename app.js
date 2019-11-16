@@ -1,41 +1,54 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// ./express-server/app.js
+const express = require('express'),
+  path  = require('path'),
+  bodyParser = require('body-parser'),
+  logger = require('morgan'),
+  mongoose = require('mongoose'),
+//import bb from 'express-busboy';
+//import SourceMapSupport from 'source-map-support';
+// import routes
+  indexRoutes = require('./routes/index'),
+  usersRoutes = require('./routes/users');
+  analyzeRoutes = require('./routes/analyser.route');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
+// define our app using express
+const app = express();
+// express-busboy to parse multipart/form-dat
+//bb.extend(app);
+// allow-cors
+app.use(function(req,res,next){
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+// configure app
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(bodyParser.json({limit: "50mb"}));
+app.use(bodyParser.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
+//app.use(bodyParser.urlencoded({ extended:true }));
 app.use(express.static(path.join(__dirname, 'public')));
+// set the port
+const port = process.env.PORT || 3001;
+// connect to database
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/poestro', {useNewUrlParser: true, useUnifiedTopology: true});
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// add Source Map Support
+//SourceMapSupport.install();
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use('/index', indexRoutes);
+app.use('/users', usersRoutes);
+app.use('/analyze', analyzeRoutes);
+
+app.get('/', (req,res) => {
+  return res.end('Api working');
 });
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+// catch 404
+app.use((req, res, next) => {
+  res.status(404).send('<h2 align=center>Page Not Found!</h2>');
 });
-
-module.exports = app;
+// start the server
+app.listen(port,() => {
+  console.log(`App Server Listening at ${port}`);
+});
