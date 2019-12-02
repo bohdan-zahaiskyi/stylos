@@ -5,4 +5,4 @@ let phraseSchema = new Schema({
   count: Number,
   
 });
-export default mongoose.model('Wanders', WanderSchema);
+//export default mongoose.model('phrases', phraseSchema);

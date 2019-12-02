@@ -3,16 +3,31 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon app_hooked.js"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-stage-2": "^7.0.0",
+    "babel": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015-node6": "^0.4.0",
+    "babel-preset-latest": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dom-parser": "^0.1.6",
     "express": "~4.16.1",
+    "html-dom-parser": "^0.2.3",
     "http-errors": "~1.6.3",
     "mongoose": "^5.7.9",
     "morgan": "~1.9.1",
     "nodemon": "^1.19.4",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.7.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0"
   }
 }
